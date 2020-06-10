@@ -27,6 +27,24 @@
 
 #include <boost/filesystem.hpp>
 
+// sadly, there is no function in scintilla to prevent user modifications, but allow
+// modifications by the program (SetReadOnly / SetEditable also prevent program's 
+// modifications). Therefore, we need to set the textCtrl to editable on each possible
+// modification.
+class wxSTCEditableLocker
+{
+private:
+	wxStyledTextCtrl *wxstc;
+public:
+	wxSTCEditableLocker(wxStyledTextCtrl *wxstc) {
+		this->wxstc = wxstc;
+		wxstc->SetEditable(true);
+	}
+	~wxSTCEditableLocker() {
+		wxstc->SetEditable(false);
+	}
+};
+
 BEGIN_EVENT_TABLE(Dis8051Frame, wxFrame)
     EVT_CLOSE(Dis8051Frame::OnClose)
     EVT_MENU(idMenuQuit, Dis8051Frame::OnQuit)
@@ -127,10 +145,8 @@ Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string fi
     wxBoxSizer *wxsz_left = new wxBoxSizer(wxVERTICAL);
     
     wxSplitterWindow *wxsw_disassembly = new wxSplitterWindow(panel_left, wxID_ANY);
-    //wxBoxSizer *wxsz_disassembly = new wxBoxSizer(wxHORIZONTAL);
     annotation_canvas = new AnnotationCanvas(this, wxsw_disassembly, wxID_ANY);
-    //wxsz_disassembly->Add(annotation_canvas, 0, wxALL | wxEXPAND, 2);
-	wxrt_disassembly = new wxStyledTextCtrl(wxsw_disassembly, idDisassemblyTextCtrl);//, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH);
+	wxrt_disassembly = new wxStyledTextCtrl(wxsw_disassembly, idDisassemblyTextCtrl);
     wxrt_disassembly->SetCaretLineVisible(true);
 	wxFont font(wxFontInfo().Family(wxFONTFAMILY_TELETYPE));
 	wxrt_disassembly->StyleSetFont((int)disas8051::Styles::DEFAULT, font);
@@ -150,8 +166,6 @@ Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string fi
 	disassembly->printToWx(wxrt_disassembly);
 	wxsw_disassembly->SplitVertically(annotation_canvas, wxrt_disassembly, 100);
 	wxsw_disassembly->SetMinimumPaneSize(10); // prevent unsplitting
-    //wxsz_disassembly->Add(wxrt_disassembly, 1, wxALL | wxEXPAND, 2);
-    //wxsz_left->Add(wxsz_disassembly, 1, wxALL | wxEXPAND, 2);
     wxsz_left->Add(wxsw_disassembly, 1, wxALL | wxEXPAND, 2);
     
 	wxStaticBoxSizer *wxsbz_current_line = new wxStaticBoxSizer(wxVERTICAL, panel_left, wxT("Current Line"));
@@ -232,6 +246,8 @@ Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string fi
     timer_gui_update1.Start(TIMER_GUI_UPDATE_INTERVAL_MS);
 
 	SetSize(wxSize(1200, 900));
+	
+	wxrt_disassembly->SetEditable(false);
 }
 
 Dis8051Frame::~Dis8051Frame()
@@ -479,6 +495,8 @@ void Dis8051Frame::OnGoto(wxCommandEvent &event)
 }
 void Dis8051Frame::OnCommentEnterPressed(wxCommandEvent &event)
 {
+	wxSTCEditableLocker disasLocker(wxrt_disassembly);
+	
     int currentLine = wxrt_disassembly->GetCurrentLine();
     auto itAddress = disassembly->addressByLine.find(currentLine);
     if(itAddress != disassembly->addressByLine.end()) {
@@ -498,6 +516,8 @@ void Dis8051Frame::OnCommentEnterPressed(wxCommandEvent &event)
 }
 void Dis8051Frame::OnFunctionEnterPressed(wxCommandEvent &event)
 {
+	wxSTCEditableLocker disasLocker(wxrt_disassembly);
+	
     int currentLine = wxrt_disassembly->GetCurrentLine();
     auto itAddress = disassembly->addressByLine.find(currentLine);
     std::string name = fn_wxUTF8String_ToUTF8String(wxtc_function->GetValue());
@@ -568,6 +588,8 @@ void Dis8051Frame::OnToggleFunctionShown(wxCommandEvent &event)
 }
 void Dis8051Frame::OnFunctionDelete(wxCommandEvent &event)
 {
+	wxSTCEditableLocker disasLocker(wxrt_disassembly);
+	
     int currentLine = wxrt_disassembly->GetCurrentLine();
     auto itAddress = disassembly->addressByLine.find(currentLine);
     if(itAddress != disassembly->addressByLine.end()) {

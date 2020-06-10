@@ -7,6 +7,10 @@
 # Commons-Attribution-Noncommercial-NoDerivative (CC BY-NC-ND).
 # See https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
 # 
+# Additionally, The Interactive 8051 Disassembler including
+# binaries generated from its source code is only allowed to be
+# used for non-commercial purposes.
+#
 # The Interactive 8051 Disassembler is distributed in the hope 
 # that it will be useful, but WITHOUT ANY WARRANTY; without 
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR 
@@ -69,9 +73,13 @@ include_directories(${Boost_INCLUDE_DIRS} ${wxWidgets_INCLUDE_DIRS})
 
 if(WIN32)
     set (SCINTILLA_LIB "${CMAKE_CURRENT_SOURCE_DIR}/Lexers.a")
+	# according to target_link_libraries docs, it's also ok to pass flags
+	# (add_link_options did not work)
+	set (ADDITIONAL_LINK_FLAGS -mwindows) # no command line window
 else(WIN32)
     # I don't know why, but it's not needed under linux
     set (SCINTILLA_LIB "")
+	set (ADDITIONAL_LINK_FLAGS "")
 endif(WIN32)
 
 target_link_libraries(
@@ -79,6 +87,7 @@ target_link_libraries(
     ${Boost_LIBRARIES}
     ${wxWidgets_LIBRARIES}
 	${SCINTILLA_LIB}
+	${ADDITIONAL_LINK_FLAGS}
     )
 
 # you can add -Wextra -pedantic -Werror if you want    
