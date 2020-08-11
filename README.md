@@ -98,6 +98,8 @@ To allow interrupts while remapping via X-BUS, the interrupts are remapped in in
 You can indicate to ignore all instructions starting from an address by adding a line to your metadata file, like:
 
     a2c4 ign
+    
+Goto a specific location with Ctrl-G or Menu File -> Goto
 
 ## Building
 

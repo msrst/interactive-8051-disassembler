@@ -185,9 +185,10 @@ void logger::registerMessage(message &newMessage)
             newMessages.erase(newMessages.begin(), itMessage);
         }
     }
-    //!! TEST
+    
+    // propagate it immediately and do not wait for log display update
     std::cout << utils::Format_Defaultdate_stdString(newMessage.time) << (newMessage.type == message_type::error ? " [error ]: "
-			: (newMessage.type == message_type::information ? " [warn  ]: " : " [inform]: ")) << newMessage.messageString << std::endl;
+			: (newMessage.type == message_type::information ? " [inform]: " : " [warn  ]: ")) << newMessage.messageString << std::endl;
 }
 
 #ifdef LOGGER_WXTEXTCTRL

@@ -59,8 +59,6 @@ if(WIN32)
 		${PROJECT_NAME}
 		${USUAL_FILES} resource.rc
 		)
-    # the user should not need to provide libgcc_s_dw2-1.dll and libstdc++-6.dll
-    add_link_options(-static-libgcc -static-libstdc++)
 else(WIN32)
 	add_executable(
 		${PROJECT_NAME}
@@ -75,7 +73,9 @@ if(WIN32)
     set (SCINTILLA_LIB "${CMAKE_CURRENT_SOURCE_DIR}/Lexers.a")
 	# according to target_link_libraries docs, it's also ok to pass flags
 	# (add_link_options did not work)
-	set (ADDITIONAL_LINK_FLAGS -mwindows) # no command line window
+	# -mwindows: no command line window
+	# -static-libgcc -static-libstdc++: the user should not need to provide those dlls
+	set (ADDITIONAL_LINK_FLAGS -mwindows -static-libgcc -static-libstdc++)
 else(WIN32)
     # I don't know why, but it's not needed under linux
     set (SCINTILLA_LIB "")
