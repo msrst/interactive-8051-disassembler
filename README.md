@@ -103,17 +103,45 @@ Goto a specific location with Ctrl-G or Menu File -> Goto
 
 ## Building
 
-Boost, wxWidgets and scintilla are needed. Use cmake to build (tested with mingw and custom boost, wxWidgets, Scintilla build on windows and gcc on Ubuntu 18.04).  
+Boost, wxWidgets and scintilla are needed. Use cmake to build (tested with mingw64 on windows and gcc on Ubuntu 18.04).
 Windows binaries are provided in the Release tab.
-For your convenience, I provided the Lexers.a from Scintilla.
+For your convenience, I provided the Lexers.a from Scintilla (should not be needed anymore).
+
+### Linux
 
 Under linux, the following should be sufficient:
 
+```bash
     apt install libwxgtk3.0-dev libboost-dev
     mkdir build
     cd build
     cmake ..
     ./dis8051
+```
+
+### Windows
+
+For a windows build with mingw64, first follow the instructions on [how to install MSYS2](https://www.msys2.org/) to install MSYS2. Then run in the MSYS2 terminal:
+
+```bash
+pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-make mingw-w64-x86_64-boost mingw-w64-x86_64-wxWidgets mingw-w64-x86_64-cmake
+```
+
+Then, you have to edit `C:\msys64\mingw64\share\cmake-3.20\Modules\FindwxWidgets.cmake` to be able to use the wxWidgets package provided by MSYS2 in cmake.  
+Replace line 221 `if(WIN32 AND NOT CYGWIN AND NOT MSYS AND NOT CMAKE_CROSSCOMPILING)` with `if(WIN32 AND NOT CYGWIN AND NOT MSYS AND NOT MINGW AND NOT CMAKE_CROSSCOMPILING)`.  
+Replace line 899 `if(wxWidgets_FOUND AND MSYS)` with `if(wxWidgets_FOUND AND (MSYS OR MINGW))`.
+
+Then you are ready for building (replace `7` with your desired number of threads):
+
+```bash
+cd <path_to_git_repo>
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" ..
+cmake --build . -j7
+```
+
+The result should be the file "dis8051.exe".
 
 ## License
 

@@ -26,13 +26,13 @@ set(wxWidgets_USE_DEBUG ON)
 
 # If you do not want to use the default boost lib or if you do not have
 # installed it, you can use your own with cmake option -DBOOST_ROOT=/your/boost/root
-find_package(Boost COMPONENTS system signals thread filesystem)
-
 if(WIN32)
-    find_package(wxWidgets COMPONENTS stc core base richtext scintilla REQUIRED)
+	find_package(Boost COMPONENTS system thread filesystem)
 else(WIN32)
-    find_package(wxWidgets COMPONENTS stc core base richtext REQUIRED)
+	find_package(Boost COMPONENTS system signals thread filesystem)
 endif(WIN32)
+
+find_package(wxWidgets COMPONENTS stc core base richtext REQUIRED)
 
 # if set, prints the command lines of the compilation steps
 #set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -67,15 +67,12 @@ include_directories(${Boost_INCLUDE_DIRS} ${wxWidgets_INCLUDE_DIRS})
 #include(${wxWidgets_USE_FILE})
 
 if(WIN32)
-    set (SCINTILLA_LIB "${CMAKE_CURRENT_SOURCE_DIR}/Lexers.a")
 	# according to target_link_libraries docs, it's also ok to pass flags
 	# (add_link_options did not work)
 	# -mwindows: no command line window
 	# -static-libgcc -static-libstdc++: the user should not need to provide those dlls
 	set (ADDITIONAL_LINK_FLAGS -mwindows -static-libgcc -static-libstdc++)
 else(WIN32)
-    # I don't know why, but it's not needed under linux
-    set (SCINTILLA_LIB "")
 	set (ADDITIONAL_LINK_FLAGS "")
 endif(WIN32)
 
@@ -83,7 +80,6 @@ target_link_libraries(
     ${PROJECT_NAME}
     ${Boost_LIBRARIES}
     ${wxWidgets_LIBRARIES}
-	${SCINTILLA_LIB}
 	${ADDITIONAL_LINK_FLAGS}
     )
 
