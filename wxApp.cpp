@@ -57,7 +57,7 @@ bool Dis8051App::OnCmdLineParsed(wxCmdLineParser &parser)
         return false;
     }
 
-    //Check if the user asked for the version
+    // Check if the user asked for the version
     if(parser.Found(wxT("v")))
     {
 #ifndef __WXMSW__
@@ -72,25 +72,44 @@ bool Dis8051App::OnCmdLineParsed(wxCmdLineParser &parser)
         metaFile = fn_wxUTF8String_ToUTF8String(wxs_zws1);
     }
 
-    //Check for a filename
+    // Check for a filename
     if(parser.GetParamCount() > 0)
     {
         wxString wxFirmwareFile = parser.GetParam(0);
-        //Under Windows when invoking via a document in Explorer, we are passed the short form.
-        //So normalize and make the long form.
+        // Under Windows when invoking via a document in Explorer, we are passed the short form.
+        // So normalize and make the long form.
         wxFileName fName(wxFirmwareFile);
         fName.Normalize(wxPATH_NORM_LONG|wxPATH_NORM_DOTS|wxPATH_NORM_TILDE|wxPATH_NORM_ABSOLUTE);
         firmwareFile = fn_wxUTF8String_ToUTF8String(fName.GetFullPath());
     }
 
     if(firmwareFile == FILE_UNDEFINED_STR) {
-        wxFileDialog openFileDialog(nullptr, _("Open firmware file"), "", "",
-                        "Binary files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-        if (openFileDialog.ShowModal() != wxID_OK) {
-            return false;
+        while(true) {
+            wxFileDialog openFileDialog(nullptr, _("Open firmware file (meta file = <firmware_filename>.txt)"), "", "",
+                            "Binary files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+            if (openFileDialog.ShowModal() != wxID_OK) {
+                return false;
+            }
+
+            firmwareFile = fn_wxUTF8String_ToUTF8String(openFileDialog.GetPath());
+            if(utils::str_ends_with(firmwareFile, ".txt")) {
+                // This is actually a tradeoff between annoying users who store their binary
+                // firmware in txt format vs. the great majority of users who don't do that.
+                // But if necessary, they can use the command line options.
+                wxString message = wxString::FromUTF8(("This message wants to warn you in case you accidentally"
+                    " selected the metadata file instead of the firmware file, because the firmware file you "
+                    "selected in the previous file dialog ends with '.txt'.\n\n"
+                    "Are you sure to use the file \"" + firmwareFile
+                    + "\" as the firmware (other word: binary) file which is gonna be disassembled?\n\n").c_str());
+                wxMessageDialog dlg(nullptr, message, _("Firmware file"), wxYES | wxNO | wxCENTRE);
+                if(dlg.ShowModal() == wxID_YES) {
+                    break;
+                }
+            }
+            else {
+                break;
+            }
         }
-        
-        firmwareFile = fn_wxUTF8String_ToUTF8String(openFileDialog.GetPath());
     }
 
     if(metaFile == FILE_UNDEFINED_STR) {
