@@ -1,21 +1,18 @@
-/******************************************************************
- * Copyright (C) 2020 Matthias Rosenthal
- * 
- * This file is part of The Interactive 8051 Disassembler.
- * 
- * The Interactive 8051 Disassembler is licensed under Creative
- * Commons-Attribution-Noncommercial-NoDerivative (CC BY-NC-ND).
- * See https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
- * 
- * Additionally, The Interactive 8051 Disassembler including
- * binaries generated from its source code is only allowed to be
- * used for non-commercial purposes.
+/************************************************************************
+ * Copyright (C) 2020-2021 Matthias Rosenthal
  *
- * The Interactive 8051 Disassembler is distributed in the hope 
- * that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE.
- *****************************************************************/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
+ ***********************************************************************/
  
 #ifndef GUI_PALETTE_H_INCLUDED
 #define GUI_PALETTE_H_INCLUDED
@@ -29,10 +26,10 @@ struct gui_palette {
     wxPen backgroundcolour_frame_pen;
     wxBrush backgroundcolour_frame_brush;
 
-    wxTextAttr logger_textctrl_fehler_textattr;
-    wxTextAttr logger_textctrl_warnung_textattr;
-    wxTextAttr logger_textctrl_meldung_textattr;
-    wxTextAttr standard_textctrl_textattr;
+    wxTextAttr logger_textctrl_error_textattr;
+    wxTextAttr logger_textctrl_warning_textattr;
+    wxTextAttr logger_textctrl_message_textattr;
+    wxTextAttr default_textctrl_textattr;
 };
 
 void gui_palette_init(gui_palette& gui_palette);

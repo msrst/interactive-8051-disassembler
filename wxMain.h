@@ -1,21 +1,18 @@
-/******************************************************************
- * Copyright (C) 2020 Matthias Rosenthal
- * 
- * This file is part of The Interactive 8051 Disassembler.
- * 
- * The Interactive 8051 Disassembler is licensed under Creative
- * Commons-Attribution-Noncommercial-NoDerivative (CC BY-NC-ND).
- * See https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
- * 
- * Additionally, The Interactive 8051 Disassembler including
- * binaries generated from its source code is only allowed to be
- * used for non-commercial purposes.
+/************************************************************************
+ * Copyright (C) 2020-2021 Matthias Rosenthal
  *
- * The Interactive 8051 Disassembler is distributed in the hope 
- * that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE.
- *****************************************************************/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
+ ***********************************************************************/
  
 #ifndef DISAS8051_MAIN_H_INCLUDED
 #define DISAS8051_MAIN_H_INCLUDED
@@ -93,7 +90,7 @@ private:
         idMenuSaveMetaFile,
         idMenuToggleCallAnnotation,
         idMenuReadAddressFromCode,
-        idTimerOberflaecheAktualisieren1,
+        idTimerUpdateUI,
         idDisassemblyTextCtrl,
         idTextCtrlSearch,
         idButtonFindBefore,
@@ -107,7 +104,7 @@ private:
     void OnQuit(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
     void OnSaveMetaFile(wxCommandEvent &event);
-    void OnTimerOberflaecheAktualisieren1(wxTimerEvent &event);
+    void OnTimerUpdateUI(wxTimerEvent &event);
     void OnDisassemblyTextUpdated(wxStyledTextEvent &event);
     void OnDissassemblyCaretMove();
     void OnFindBefore(wxCommandEvent &event);

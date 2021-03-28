@@ -118,9 +118,7 @@ Under linux, the following should be sufficient:
 ## License
 
 Copyright (C) Matthias Rosenthal  
-License: [CC BY-NC-ND](./LICENSE)  
+License: [GPL-3.0-only](./LICENSE)  
 Applies to all files, except:
  - the `Instruct8051 OpCodes[]` definition in 8051/disassembler.cpp
- - Lexers.a  
-
-Also applies to the released files, including executables. The Interactive 8051 Disassembler is only allowed to be used for non-commercial purposes.
+ - Lexers.a

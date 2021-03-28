@@ -1,21 +1,18 @@
-/******************************************************************
- * Copyright (C) 2020 Matthias Rosenthal
- * 
- * This file is part of The Interactive 8051 Disassembler.
- * 
- * The Interactive 8051 Disassembler is licensed under Creative
- * Commons-Attribution-Noncommercial-NoDerivative (CC BY-NC-ND).
- * See https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
- * 
- * Additionally, The Interactive 8051 Disassembler including
- * binaries generated from its source code is only allowed to be
- * used for non-commercial purposes.
+/************************************************************************
+ * Copyright (C) 2020-2021 Matthias Rosenthal
  *
- * The Interactive 8051 Disassembler is distributed in the hope 
- * that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE.
- *****************************************************************/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
+ ***********************************************************************/
  
 #include <iostream>
 
@@ -36,19 +33,19 @@ void logdisplay_textctrl::newLine(message& msg)
     switch(msg.type)
     {
     case message_type::error:
-        m_textctrl->SetDefaultStyle(m_gui_palette->logger_textctrl_fehler_textattr);
+        m_textctrl->SetDefaultStyle(m_gui_palette->logger_textctrl_error_textattr);
         m_textctrl->AppendText(utils::Format_Defaultdate_wxString(msg.time) + wxT(": ") + wxString::FromUTF8(msg.messageString.c_str()) + wxT("\n"));
-        m_textctrl->SetDefaultStyle(m_gui_palette->standard_textctrl_textattr);
+        m_textctrl->SetDefaultStyle(m_gui_palette->default_textctrl_textattr);
         break;
     case message_type::warning:
-        m_textctrl->SetDefaultStyle(m_gui_palette->logger_textctrl_warnung_textattr);
+        m_textctrl->SetDefaultStyle(m_gui_palette->logger_textctrl_warning_textattr);
         m_textctrl->AppendText(utils::Format_Defaultdate_wxString(msg.time) + wxT(": ") + wxString::FromUTF8(msg.messageString.c_str()) + wxT("\n"));
-        m_textctrl->SetDefaultStyle(m_gui_palette->standard_textctrl_textattr);
+        m_textctrl->SetDefaultStyle(m_gui_palette->default_textctrl_textattr);
         break;
     case message_type::information:
-        m_textctrl->SetDefaultStyle(m_gui_palette->logger_textctrl_meldung_textattr);
+        m_textctrl->SetDefaultStyle(m_gui_palette->logger_textctrl_message_textattr);
         m_textctrl->AppendText(utils::Format_Defaultdate_wxString(msg.time) + wxT(": ") + wxString::FromUTF8(msg.messageString.c_str()) + wxT("\n"));
-        m_textctrl->SetDefaultStyle(m_gui_palette->standard_textctrl_textattr);
+        m_textctrl->SetDefaultStyle(m_gui_palette->default_textctrl_textattr);
         break;
     }
 }
@@ -76,7 +73,7 @@ logdisplay_file::logdisplay_file()
 }
 void logdisplay_file::beginUpdate()
 {
-    file.open(filename.c_str(), std::ios_base::out | std::ios_base::app); // Datei wenn noetig neu erstellen. Hängt hinten an.
+    file.open(filename.c_str(), std::ios_base::out | std::ios_base::app); // If the file already exists, we will append to it. Else, a new file is created.
     if(file)
     {
         isFileOpen = true;

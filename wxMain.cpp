@@ -1,21 +1,18 @@
-/******************************************************************
- * Copyright (C) 2020 Matthias Rosenthal
- * 
- * This file is part of The Interactive 8051 Disassembler.
- * 
- * The Interactive 8051 Disassembler is licensed under Creative
- * Commons-Attribution-Noncommercial-NoDerivative (CC BY-NC-ND).
- * See https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
- * 
- * Additionally, The Interactive 8051 Disassembler including
- * binaries generated from its source code is only allowed to be
- * used for non-commercial purposes.
+/************************************************************************
+ * Copyright (C) 2020-2021 Matthias Rosenthal
  *
- * The Interactive 8051 Disassembler is distributed in the hope 
- * that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE.
- *****************************************************************/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
+ ***********************************************************************/
  
 #include <cmath>
 #include "wx/config.h"
@@ -55,7 +52,7 @@ BEGIN_EVENT_TABLE(Dis8051Frame, wxFrame)
     EVT_MENU(idMenuFindNext, Dis8051Frame::OnFindNext)
     EVT_MENU(idMenuToggleCallAnnotation, Dis8051Frame::OnToggleCallAnnotation)
     EVT_MENU(idMenuReadAddressFromCode, Dis8051Frame::OnReadAddressFromCode)
-    EVT_TIMER(idTimerOberflaecheAktualisieren1, Dis8051Frame::OnTimerOberflaecheAktualisieren1)
+    EVT_TIMER(idTimerUpdateUI, Dis8051Frame::OnTimerUpdateUI)
     EVT_STC_UPDATEUI(idDisassemblyTextCtrl, Dis8051Frame::OnDisassemblyTextUpdated)
     EVT_BUTTON(idButtonFindBefore, Dis8051Frame::OnFindBefore)
     EVT_BUTTON(idButtonFindNext, Dis8051Frame::OnFindNext)
@@ -67,7 +64,7 @@ END_EVENT_TABLE()
 
 Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string firmwareFile, std::string metaFile, Dis8051App *app)
     : wxFrame(frame, -1, title), 
-		timer_gui_update1(this, idTimerOberflaecheAktualisieren1)
+		timer_gui_update1(this, idTimerUpdateUI)
 {
     m_app = app;
     gui_palette_init(c_gui_palette);
@@ -94,13 +91,19 @@ Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string fi
             c_logger->LogInformation("Created new meta, starting at address 0");
         }
 
+        c_logger->LogInformation("Disassembling...");
         for(auto itFunction = disassembly->functions.begin(); itFunction != disassembly->functions.end(); itFunction++) {
 		    disassembler.followCodePath(disassembly->buf, itFunction->first, disassembly.get());
         }
+        c_logger->LogInformation("Resolving remapping calls...");
         disassembly->resolveRemapCalls(&disassembler);
+        c_logger->LogInformation("Resolving comments...");
         disassembly->resolveComments();
+        c_logger->LogInformation("Resolving function ends addresses...");
         disassembly->resolveFunctionEndAddresses();
+        c_logger->LogInformation("Auto commenting...");
         disassembly->autoComment();
+        c_logger->LogInformation("Processed firmware + metadata file.");
 	}
 	else {
 		c_logger->LogError("Could not open file " + firmwareFile);
@@ -163,7 +166,9 @@ Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string fi
     #ifdef _WIN32 // also 64-bit
 		annotation_canvas->lineHeight += 3; // no time to check why this is needed
 	#endif
+    c_logger->LogInformation("Generating text viewer content...");
 	disassembly->printToWx(wxrt_disassembly);
+    c_logger->LogInformation("Generated text viewer content.");
 	wxsw_disassembly->SplitVertically(annotation_canvas, wxrt_disassembly, 100);
 	wxsw_disassembly->SetMinimumPaneSize(10); // prevent unsplitting
     wxsz_left->Add(wxsw_disassembly, 1, wxALL | wxEXPAND, 2);
@@ -284,7 +289,7 @@ void Dis8051Frame::OnAbout(wxCommandEvent &event)
     wxMessageBox(msg, _("Welcome to..."));
 }
 
-void Dis8051Frame::OnTimerOberflaecheAktualisieren1(wxTimerEvent& event)
+void Dis8051Frame::OnTimerUpdateUI(wxTimerEvent& event)
 {
     c_logger->updateLogDisplays();
 }

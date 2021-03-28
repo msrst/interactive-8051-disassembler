@@ -1,21 +1,18 @@
-/******************************************************************
- * Copyright (C) 2020 Matthias Rosenthal
- * 
- * This file is part of The Interactive 8051 Disassembler.
- * 
- * The Interactive 8051 Disassembler is licensed under Creative
- * Commons-Attribution-Noncommercial-NoDerivative (CC BY-NC-ND).
- * See https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
- * 
- * Additionally, The Interactive 8051 Disassembler including
- * binaries generated from its source code is only allowed to be
- * used for non-commercial purposes.
+/************************************************************************
+ * Copyright (C) 2020-2021 Matthias Rosenthal
  *
- * The Interactive 8051 Disassembler is distributed in the hope 
- * that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR 
- * A PARTICULAR PURPOSE.
- *****************************************************************/
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
+ ***********************************************************************/
  
 #include <cctype>
 #include "wx/stc/stc.h"
@@ -523,7 +520,8 @@ void Disassembly::recurseFunction(std::map<uint64_t, Function>::iterator itFunct
 {
 	auto itInstruction = instructions.find(address);
 	if(itInstruction == instructions.end()) {
-        logger->LogError("Disassembly: Function " + itFunction->second.name + 
+        // might be due to a previous "refusing to disassemble instruction" (on weird binaries)
+		logger->LogError("Disassembly: Function " + itFunction->second.name + 
 			" should have been parsed before on address " + utils::Int_To_String_Hex(address));
 		return;
 	}
@@ -532,7 +530,8 @@ void Disassembly::recurseFunction(std::map<uint64_t, Function>::iterator itFunct
 	if(itNextFunction != functions.end()) {
 		itNextFunctionInstruction = instructions.find(itNextFunction->first);
 		if(itNextFunctionInstruction == instructions.end()) {
-            logger->LogError("Disassembly: Next Function " + itNextFunction->second.name + 
+            // might be due to a previous "refusing to disassemble instruction" (on weird binaries)
+			logger->LogError("Disassembly: Next Function " + itNextFunction->second.name + 
 				" should have been parsed before on address " + utils::Int_To_String_Hex(itNextFunction->first));
 			return;
 		}
