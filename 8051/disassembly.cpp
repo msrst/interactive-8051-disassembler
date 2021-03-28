@@ -523,7 +523,7 @@ void Disassembly::recurseFunction(std::map<uint64_t, Function>::iterator itFunct
 {
 	auto itInstruction = instructions.find(address);
 	if(itInstruction == instructions.end()) {
-		logger->LogError("Disassembly: Function " + itFunction->second.name + 
+        logger->LogError("Disassembly: Function " + itFunction->second.name + 
 			" should have been parsed before on address " + utils::Int_To_String_Hex(address));
 		return;
 	}
@@ -532,7 +532,7 @@ void Disassembly::recurseFunction(std::map<uint64_t, Function>::iterator itFunct
 	if(itNextFunction != functions.end()) {
 		itNextFunctionInstruction = instructions.find(itNextFunction->first);
 		if(itNextFunctionInstruction == instructions.end()) {
-			logger->LogError("Disassembly: Next Function " + itNextFunction->second.name + 
+            logger->LogError("Disassembly: Next Function " + itNextFunction->second.name + 
 				" should have been parsed before on address " + utils::Int_To_String_Hex(itNextFunction->first));
 			return;
 		}
@@ -715,7 +715,7 @@ std::vector<uint64_t> Disassembly::GetFunctionTargetAddresses(uint64_t functionA
 					" of function " + function.name);
 			continue;
 		}
-		while(itInstruction->first < block.end) {
+		while((itInstruction->first < block.end) && (itInstruction != instructions.end())) {
 			if(itInstruction->second.isJump || itInstruction->second.isCondJump) {
 				ret.push_back(itInstruction->second.address);
 			}
