@@ -113,7 +113,7 @@ Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string fi
     // create a menu bar
     wxMenuBar* mbar = new wxMenuBar();
     wxMenu* fileMenu = new wxMenu(_T(""));
-    fileMenu->Append(idMenuSaveMetaFile, _("&Save\tCtrl-S"));
+    fileMenu->Append(idMenuSaveMetaFile, _("&Save metadata file\tCtrl-S"));
     fileMenu->AppendSeparator();
     fileMenu->Append(idMenuGoto, _("&Goto line\tCtrl-G"));
     fileMenu->Append(idMenuFindNext, _("Find &next\tF3"));
@@ -178,14 +178,17 @@ Dis8051Frame::Dis8051Frame(wxFrame *frame, const wxString& title, std::string fi
     wxStaticText *lbl_comment = new wxStaticText(panel_left, wxID_ANY, wxT("Comment: "));
     wxsz_comment->Add(lbl_comment, 0, wxALL, 2);
     wxtc_comment = new wxTextCtrl(panel_left, idTextCtrlComment, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    wxtc_comment->SetToolTip(wxT("press enter to create or edit a comment at the current instruction"));
     wxsz_comment->Add(wxtc_comment, 1, wxALL, 2);
     wxsbz_current_line->Add(wxsz_comment, 0, wxALL | wxEXPAND, 2);
     wxBoxSizer *wxsz_function = new wxBoxSizer(wxHORIZONTAL);
     wxStaticText *lbl_function = new wxStaticText(panel_left, wxID_ANY, wxT("Function: "));
     wxsz_function->Add(lbl_function, 0, wxALL, 2);
     wxtc_function = new wxTextCtrl(panel_left, idTextCtrlFunction, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    wxtc_function->SetToolTip(wxT("press enter to create a function or rename a function at the current address"));
     wxsz_function->Add(wxtc_function, 1, wxALL, 2);
-    wxc_function_shown = new wxCheckBox(panel_left, idCheckBoxFunctionShown, wxT("shown"));
+    wxc_function_shown = new wxCheckBox(panel_left, idCheckBoxFunctionShown, wxT("show"));
+    wxc_function_shown->SetToolTip(wxT("whether the function is shown in the function call graph"));
     wxsz_function->Add(wxc_function_shown, 0, wxALL, 2);
     wxButton *wxb_delete_function = new wxButton(panel_left, idButtonDeleteFunction, wxT("delete"));
     wxsz_function->Add(wxb_delete_function, 0, wxALL, 2);

@@ -27,7 +27,7 @@
 
 class Dis8051Frame;
 
-class FunctionGraph : public wxScrolledWindow
+class FunctionGraph : public wxScrolledCanvas
 {
 private: 
     const int MARGIN = 2;
@@ -80,6 +80,7 @@ private:
     void OnLeftUp(wxMouseEvent &event);
     void OnLeftDClick(wxMouseEvent &event);
     void OnKeyDown(wxKeyEvent &event);
+    void OnMouseWheel(wxMouseEvent &event);
 
     int getFunctionIndex(wxPoint mousePos);
     void DrawConnectorLine(wxDC *dc, int x1, int y1, int x2, int y2);

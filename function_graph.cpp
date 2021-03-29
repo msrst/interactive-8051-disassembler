@@ -18,16 +18,17 @@
 #include "wxMain.h"
 #include <iostream>
 
-BEGIN_EVENT_TABLE(FunctionGraph, wxScrolledWindow)
+BEGIN_EVENT_TABLE(FunctionGraph, wxScrolledCanvas)
     EVT_LEFT_DOWN(FunctionGraph::OnLeftDown)
     EVT_MOTION(FunctionGraph::OnMouseMove)
     EVT_LEFT_UP(FunctionGraph::OnLeftUp)
     EVT_KEY_DOWN(FunctionGraph::OnKeyDown)
     EVT_LEFT_DCLICK(FunctionGraph::OnLeftDClick)
+    EVT_MOUSEWHEEL(FunctionGraph::OnMouseWheel)
 END_EVENT_TABLE()
 
 FunctionGraph::FunctionGraph(Dis8051Frame* mainFrame, wxWindow *parent, wxWindowID id) : 
-        wxScrolledWindow(parent, id, wxDefaultPosition, wxSize(150, 300)),
+        wxScrolledCanvas(parent, id, wxDefaultPosition, wxSize(150, 300)),
         font(wxFontInfo(9))
 {
     this->mainFrame = mainFrame;
@@ -332,5 +333,17 @@ void FunctionGraph::RefreshCache()
 				cFunction.remapCallIndexes.push_back(itRemapCall->second);
 			}
         }
+    }
+}
+
+void FunctionGraph::OnMouseWheel(wxMouseEvent &event)
+{
+    // wxScrollCanvas only implements vertical scrolling by default
+    double rotation = event.GetWheelRotation() / event.GetWheelDelta();
+    if(event.ShiftDown()) {
+        Scroll(GetViewStart() + wxSize(-rotation * 3, 0));
+    }
+    else {
+        Scroll(GetViewStart() + wxSize(0, -rotation * 3));
     }
 }

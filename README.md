@@ -44,8 +44,10 @@ G: Lists the blocks that jump to or call the code on the current address
 ## Program usage
 
 Just start the program, and you are asked to open a binary file. Alternatively, you can open a file with it (passed as parameter).  
-All metadata added by the user, like function addresses or comments, are stored in a file named <firmware_image>.txt.  
-When you open an image for the first time, the code at address 0 is disassembled recursively following all jumps and calls. You can add functions on other addresses to parse code, e. g. at interrupts (consider datasheet).  
+All metadata added by the user, like function addresses or comments, are stored in a file named <firmware_image>.txt when you run on `Menu File -> Save metadata file`.
+When you open an image for the first time, the code at address 0 is disassembled recursively following all jumps and calls. You can add functions on other addresses to parse code, e. g. at interrupts (consider the datasheet of your MCU).  
+
+You might consider modifying the code for different MCUs than the ENE keyboard controller mentioned above, e.g. to set the matching autocomments when registers are accessed.
 
 ## Trampolines
 
