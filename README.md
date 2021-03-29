@@ -107,6 +107,8 @@ Boost, wxWidgets and scintilla are needed. Use cmake to build (tested with mingw
 Windows binaries are provided in the Release tab.
 For your convenience, I provided the Lexers.a from Scintilla (should not be needed anymore).
 
+When calling cmake, add `-DCMAKE_BUILD_TYPE=Debug` / `-DCMAKE_BUILD_TYPE=Release` to choose between a debug or release build.
+
 ### Linux
 
 Under linux, the following should be sufficient:
@@ -124,20 +126,20 @@ Under linux, the following should be sufficient:
 For a windows build with mingw64, first follow the instructions on [how to install MSYS2](https://www.msys2.org/) to install MSYS2. Then run in the MSYS2 terminal:
 
 ```bash
-pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-make mingw-w64-x86_64-boost mingw-w64-x86_64-wxWidgets mingw-w64-x86_64-cmake
+pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-boost mingw-w64-x86_64-wxWidgets mingw-w64-x86_64-cmake mingw-w64-x86_64-jbigkit
 ```
 
 Then, you have to edit `C:\msys64\mingw64\share\cmake-3.20\Modules\FindwxWidgets.cmake` to be able to use the wxWidgets package provided by MSYS2 in cmake.  
 Replace line 221 `if(WIN32 AND NOT CYGWIN AND NOT MSYS AND NOT CMAKE_CROSSCOMPILING)` with `if(WIN32 AND NOT CYGWIN AND NOT MSYS AND NOT MINGW AND NOT CMAKE_CROSSCOMPILING)`.  
 Replace line 899 `if(wxWidgets_FOUND AND MSYS)` with `if(wxWidgets_FOUND AND (MSYS OR MINGW))`.
 
-Then you are ready for building (replace `7` with your desired number of threads):
+Then you are ready for building (replace `7` with your desired number of threads). Open a MSYS2 Mingw64 terminal, and enter:
 
 ```bash
 cd <path_to_git_repo>
 mkdir build
 cd build
-cmake -G "MinGW Makefiles" ..
+cmake -G "MinGW Makefiles" -DCMAKE_FRAMEWORK_PATH=C:/msys64/mingw64/x86_64-w64-mingw32/lib ..
 cmake --build . -j7
 ```
 

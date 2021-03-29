@@ -18,11 +18,16 @@ project(dis8051)
 
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Debug)
 
 #set(wxWidgets_USE_LIBS)
 
-set(wxWidgets_USE_DEBUG ON)
+message(STATUS "build type: ${CMAKE_BUILD_TYPE}")
+if(CMAKE_BUILD_TYPE EQUAL "Debug")
+	set(wxWidgets_USE_DEBUG ON)
+else(CMAKE_BUILD_TYPE EQUAL "Debug")
+	set(wxWidgets_USE_DEBUG OFF)
+endif(CMAKE_BUILD_TYPE EQUAL "Debug")
 
 # If you do not want to use the default boost lib or if you do not have
 # installed it, you can use your own with cmake option -DBOOST_ROOT=/your/boost/root
@@ -32,6 +37,9 @@ else(WIN32)
 	find_package(Boost COMPONENTS system signals thread filesystem)
 endif(WIN32)
 
+if(WIN32)
+	set(wxWidgets_USE_STATIC ON)
+endif(WIN32)
 find_package(wxWidgets COMPONENTS stc core base richtext REQUIRED)
 
 # if set, prints the command lines of the compilation steps
@@ -71,7 +79,8 @@ if(WIN32)
 	# (add_link_options did not work)
 	# -mwindows: no command line window
 	# -static-libgcc -static-libstdc++: the user should not need to provide those dlls
-	set (ADDITIONAL_LINK_FLAGS -mwindows -static-libgcc -static-libstdc++)
+	# -static: the user should not need to provide libwinpthread-1.dll
+	set (ADDITIONAL_LINK_FLAGS -mwindows -static-libgcc -static-libstdc++ -static)
 else(WIN32)
 	set (ADDITIONAL_LINK_FLAGS "")
 endif(WIN32)
