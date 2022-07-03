@@ -31,11 +31,7 @@ endif(CMAKE_BUILD_TYPE EQUAL "Debug")
 
 # If you do not want to use the default boost lib or if you do not have
 # installed it, you can use your own with cmake option -DBOOST_ROOT=/your/boost/root
-if(WIN32)
-	find_package(Boost COMPONENTS system thread filesystem)
-else(WIN32)
-	find_package(Boost COMPONENTS system signals thread filesystem)
-endif(WIN32)
+find_package(Boost COMPONENTS system thread filesystem)
 
 if(WIN32)
 	set(wxWidgets_USE_STATIC ON)
@@ -46,7 +42,7 @@ find_package(wxWidgets COMPONENTS stc core base richtext REQUIRED)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 include(
-    "${wxWidgets_USE_FILE}" 
+    "${wxWidgets_USE_FILE}"
     "${Boost_INCLUDE_DIRS}"
     )
 
@@ -92,5 +88,5 @@ target_link_libraries(
 	${ADDITIONAL_LINK_FLAGS}
     )
 
-# you can add -Wextra -pedantic -Werror if you want    
+# you can add -Wextra -pedantic -Werror if you want
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
